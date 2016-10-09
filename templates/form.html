@@ -16,19 +16,19 @@
       }
         function senddata(){
         let annodata = anno.getAnnotations()
-
+	let taginput = document.getElementById("tags").value
+        tags = taginput.split(" ");
 
     $.ajax({
         type: "POST",
         data : JSON.stringify({
-            'tags' : ['clown'],
+            'tags' : tags,
             'src' : '{{filename}}',
             'data' : annodata
         }),
-        url: "http://localhost:5000/test",
+        url: "http://54.174.197.7/test",
         contentType: "application/json"
     });
-    console.log(annodata[0].src)
     }
 
 {% endautoescape %}
@@ -36,7 +36,10 @@
 
     <body onload="init();">
       <img height='200px' class="shrinkToFit" id="img" />
+
 <div onclick="senddata();">
+
+<input type="text" id="tags" name="tags">
 		<input type="submit" value="submit">
 </div>
 

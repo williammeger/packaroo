@@ -7,35 +7,39 @@
     <script type="text/javascript" src="../static/annotorious.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script>
-      function init() {
-        anno.makeAnnotatable(document.getElementById('img1'));
+
+      //  for(let i = 0; i < result.length; i++){
+      //   console.log(result[i]['data'])
+      // }
+
+
+      function update() {
+        let taginput = document.getElementById("tags").value
+
+
+        $.getJSON("http://54.174.197.7/kit?tags="+taginput, function(result){
+          console.log(result)
+          let singleanno = result[0]['data']
+          let fileloc = result[0]['src']
+
+        document.getElementById("img").setAttribute("src", 'http://54.174.197.7'+ fileloc); 
+        
+        anno.makeAnnotatable(document.getElementById('img'));
+        for(let i = 0; i < singleanno.length;i++){
+          console.log(singleanno[i])
+          anno.addAnnotation(singleanno[i]);
+        }
+
+          });
       }
-
-        function senddata(){
-        let annodata = anno.getAnnotations()
-
-
-  $.getJSON("http://localhost:5000/kit", function(result){
-       for(let i = 0; i < result.length; i++){
-       	console.log(result[i]['data'])
-      }
-
-       	//
-       	let singleanno = result[0]['data']
-       	for(let i = 0; i < singleanno.length;i++){
-		anno.addAnnotation(singleanno[i])
-		}
-
-        });
-
-    }
 
 
     </script>
 
-    <body onload="init();">
-      <img height='200px' src="../uploads/example.jpg" id="img1" />
-<div onclick="senddata();">
+<body>
+      <img height='200px' id="img"/>
+<div onclick="update();">
+<input type="text" id="tags" name="tags">
 		<input type="submit" value="submit">
 </div>
 

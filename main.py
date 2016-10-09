@@ -26,6 +26,14 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+@app.route('/all')
+def all():
+    return render_template('renderall.html')
+
+@app.route('/check')
+def check():
+    return render_template('testrender.html')
+
 @app.route('/upload', methods=['POST'])
 def upload():
     # Get the name of the uploaded file
@@ -58,14 +66,15 @@ def get_summary():
 def query():
   qs = request.query_string
   if qs == '':
-    kits = collection.find()
+    kits =  collection.find()
     return dumps(kits)
   else:
     qtags = request.args.get('tags')
     print qtags
-    kits = collection.find({"tags":{"$in" :[qtags]}})
+    kits =  collection.find({"tags":{"$in" :[qtags]}})
     #?tags=clown
     return dumps(kits)
+
 
 
 
