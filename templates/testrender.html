@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<link type="text/css" rel="stylesheet" href="../static/css/annotorious.css" />
+    <script type="text/javascript" src="../static/annotorious.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+      function init() {
+        anno.makeAnnotatable(document.getElementById('img1'));
+      }
+
+        function senddata(){
+        let annodata = anno.getAnnotations()
+
+
+  $.getJSON("http://localhost:5000/kit", function(result){
+       for(let i = 0; i < result.length; i++){
+       	console.log(result[i]['data'])
+      }
+
+       	//
+       	let singleanno = result[0]['data']
+       	for(let i = 0; i < singleanno.length;i++){
+		anno.addAnnotation(singleanno[i])
+		}
+
+        });
+
+    }
+
+
+    </script>
+
+    <body onload="init();">
+      <img height='200px' src="../uploads/example.jpg" id="img1" />
+<div onclick="senddata();">
+		<input type="submit" value="submit">
+</div>
+
+    </body>
+
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<link type="text/css" rel="stylesheet" href="../static/css/annotorious.css"/>
+    <script type="text/javascript" src="../static/annotorious.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+</head>
+    <script>
+    {% autoescape false %}
+      function init() {
+        document.getElementById("img").setAttribute("src", '{{filename}}'); 
+        
+        anno.makeAnnotatable(document.getElementById('img'));
+      }
+        function senddata(){
+        let annodata = anno.getAnnotations()
+
+
+    $.ajax({
+        type: "POST",
+        data : JSON.stringify({
+            'tags' : ['clown'],
+            'src' : '{{filename}}',
+            'data' : annodata
+        }),
+        url: "http://localhost:5000/test",
+        contentType: "application/json"
+    });
+    console.log(annodata[0].src)
+    }
+
+{% endautoescape %}
+    </script>
+
+    <body onload="init();">
+      <img height='200px' class="shrinkToFit" id="img" />
+<div onclick="senddata();">
+		<input type="submit" value="submit">
+</div>
+
+    </body>
+
+
+</html>
