@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title></title>
 
-	<link type="text/css" rel="stylesheet" href="../static/css/annotorious.css"/>
+<head>
+    <title></title>
+
+    <link type="text/css" rel="stylesheet" href="../static/css/annotorious.css" />
     <script type="text/javascript" src="../static/annotorious.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 </head>
-    <script>
+<script>
     {% autoescape false %}
       function init() {
         document.getElementById("img").setAttribute("src", '{{filename}}'); 
@@ -16,7 +17,7 @@
       }
         function senddata(){
         let annodata = anno.getAnnotations()
-	let taginput = document.getElementById("tags").value
+	    let taginput = document.getElementById("tags").value
         tags = taginput.split(" ");
 
     $.ajax({
@@ -34,16 +35,16 @@
 {% endautoescape %}
     </script>
 
-    <body onload="init();">
-      <img height='200px' class="shrinkToFit" id="img" />
+<body onload="init();">
+    <img height='200px' class="shrinkToFit" id="img" />
 
-<div onclick="senddata();">
+    <div onclick="senddata();">
 
-<input type="text" id="tags" name="tags">
-		<input type="submit" value="submit">
-</div>
+        <input type="text" id="tags" name="tags">
+        <input type="submit" value="submit">
+    </div>
 
-    </body>
+</body>
 
 
 </html>

@@ -6,18 +6,16 @@ from pymongo import MongoClient
 from bson.json_util import dumps
 
 app = Flask(__name__)
-# This is the path to the upload directory
-app.config['UPLOAD_FOLDER'] = 'static/'
-# These are the extension that we are accepting to be uploaded
-app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
 
+#setup the location of the database
 client = MongoClient('mongodb://default:default@ds053216.mlab.com:53216/hackny')
 db = client.hackny
 collection = db.kits
 
+#set up what files to save and where
+app.config['UPLOAD_FOLDER'] = 'static/'
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
 
-
-# For a given file, return whether it's an allowed type or not
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
@@ -26,42 +24,36 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+#shows all the kits
 @app.route('/all')
 def all():
     return render_template('renderall.html')
 
+#allows specific tags to be searched 
+# - searchbar could be imporved 
 @app.route('/check')
 def check():
     return render_template('testrender.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    # Get the name of the uploaded file
     file = request.files['file']
     # Check if the file is one of the allowed types/extensions
     if file and allowed_file(file.filename):
         # Make the filename safe, remove unsupported chars
         filename = secure_filename(file.filename)
-        # Move the file form the temporal folder to
-        # the upload folder we setup
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # Redirect the user to the uploaded_file route, which
-        # will basicaly show on the browser the uploaded file
-        return redirect(url_for('uploaded_file',
-                                filename=filename))
+        # Redirect the user to the uploaded_file route
+        return redirect(url_for('uploaded_file', filename=filename))
 
 
+#allow user to add annotations 
+# - bug: user will submit 2 copies to the db (one with and one without annotations)
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-
   return render_template('form.html', filename=url_for('static', filename=filename))
 
-@app.route('/test', methods=['GET', 'POST'])
-def get_summary():
-  print request.json
-  collection.insert_one(request.json)
-  return '200'
-
+#an 'api' route to get all kits and query for kits using ?tags=yourtaghere
 @app.route('/kit', methods=['GET', 'POST'])
 def query():
   qs = request.query_string
@@ -72,11 +64,7 @@ def query():
     qtags = request.args.get('tags')
     print qtags
     kits =  collection.find({"tags":{"$in" :[qtags]}})
-    #?tags=clown
     return dumps(kits)
-
-
-
 
 if __name__ == '__main__':
   app.run(port=5000,debug=True)
